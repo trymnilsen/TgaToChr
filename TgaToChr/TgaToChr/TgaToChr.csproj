@@ -41,9 +41,11 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="PixelInfo.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="TgaFile.cs" />
+    <Compile Include="TgaHeader.cs" />
     <Compile Include="Util.cs" />
   </ItemGroup>
   <ItemGroup>

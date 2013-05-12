@@ -28,5 +28,13 @@ namespace TgaToChr
                 return false;
             }
         }
+        public static bool operator !=(PixelInfo p1, PixelInfo p2)
+        {
+            return !(p1 == p2);
+        }
+        public override string ToString()
+        {
+            return "R" + red + "G" + green + "B" + blue;
+        }
     }
 }

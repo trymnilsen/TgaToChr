@@ -38,9 +38,16 @@ namespace TgaToChr
             }
             catch (Exception ex)
             {
-                Console.WriteLine("**Error, General error");
+                Console.WriteLine("**Error, General error **");
             }
-
+            try
+            {
+                sourceImage.ReadImageData();
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine("** Error, error processing image data" + ex.ToString());
+            }
             
             Console.ReadKey();
         }
