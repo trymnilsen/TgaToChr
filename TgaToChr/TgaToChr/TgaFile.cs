@@ -16,29 +16,15 @@ namespace TgaToChr
         private byte[] imageData;
         private string tgaPath;
         public tgaHeader Header { get { return header; } }
-        public List<PixelInfo> patternValues;
         public List<List<byte>> patternPixels;
+        public List<byte> patternPalette;
         public TgaFile(String tgaPath)
         {
             this.tgaPath = tgaPath;
             patternPixels = new List<List<byte>>();
-            patternValues = new List<PixelInfo>(4);
-
+            patternPalette = new List<byte>(4);
         }
         //returns 255 if color is not defined
-        private byte colorIsDefined(PixelInfo pi)
-        {
-            byte returnCode =255;
-            for(byte i=0; i<patternValues.Count; i++)
-            {
-                if(patternValues[i]==pi)
-                {
-                    returnCode=i;
-                    break;
-                }
-            }
-            return returnCode;
-        }
         public void ReadHeader()
         {
             //read header
@@ -61,58 +47,76 @@ namespace TgaToChr
             header.descriptor = fileBytes[17];
 
         }
+        private byte indexOfColor(byte color)
+        {
+            for (byte i = 0; i < patternPalette.Count; i++)
+            {
+                if (color == patternPalette[i])
+                {
+                    return i;
+                }
+            }
+            return 255;
+        }
         public void ReadImageData()
         {
             int test = 0;
             byte[] fileBytes = File.ReadAllBytes(tgaPath);
             Console.WriteLine("First pixel r"+fileBytes[20]+"g"+fileBytes[19]+"b"+fileBytes[18]);
             int prevLN = 0;
-            
-
+            int currentPixelnumber=0;
+            //For simplicty we grayscale the pixel, using just the average of our rgb values
             for (int y = 0; y < header.height; y+=1)
             {
                 List<byte> linePixels = new List<byte>();
                 patternPixels.Add(linePixels);
                 for (int x = 0; x < Header.width; x += 1)
                 {
-                    int currentPixelnumber = (y * Header.width) + x;
-
                     byte[] colors = new byte[3];
                     for (int b = 0; b < 3; b++)
                     {
                         colors[b] = fileBytes[currentPixelnumber + b + headerOffset];
                     }
 
-                    PixelInfo currentPixel = new PixelInfo(colors[0], colors[1], colors[2]);
+                    byte currentPixelGrayscale = (byte)((colors[2] + colors[1] + colors[0])/3);
 
+                    if (!patternPalette.Contains(currentPixelGrayscale))
+                    {
+                        Console.WriteLine("found new nyance:" + currentPixelGrayscale+ ""+patternPalette+""+currentPixelnumber);
+                        if (patternPalette.Count < 4)
+                        {
+                            Console.WriteLine("Added to list");
+                            patternPalette.Add(currentPixelGrayscale);
+                        }
+                    }
+                    patternPixels[y].Add(indexOfColor(currentPixelGrayscale));
+                    currentPixelnumber += 3;
                     //this pixel does allready exists add it to the list
 
-                    if(colorIsDefined(currentPixel)!=255)
-                    {
-                        patternPixels[y].Add(colorIsDefined(currentPixel));
-                    }
-                    else //a color we has not read/discovered yet
-                    {
-                        if (patternValues.Count < 4) //are there room to define new colors?
-                        {
-                            Console.WriteLine("found new color: " + currentPixel.ToString());
-                            patternPixels[y].Add((byte)(patternValues.Count - 1));        
-                            patternValues.Add(currentPixel);//add a new color to our "Palette" or more precisely possible pattern values
-                        }
-                        else //no there is not
-                        {
-                             //Console.WriteLine("tired to define to full list: " + currentPixel.ToString());
-                             /*Console.WriteLine("experimental: at coord " + i / header.width + "x" + i % header.width);
-                             throw new Exception("More than 4 colors used in image");*/
-                        }
-                    }
+                    //if(colorIsDefined(currentPixel)!=255)
+                    //{
+                    //    patternPixels[y].Add(colorIsDefined(currentPixel));
+                    //}
+                    //else //a color we has not read/discovered yet
+                    //{
+                    //    if (patternValues.Count < 4) //are there room to define new colors?
+                    //    {
+                    //        Console.WriteLine("found new color: " + currentPixel.ToString());
+                    //        patternPixels[y].Add((byte)(patternValues.Count - 1));        
+                    //        patternValues.Add(currentPixel);//add a new color to our "Palette" or more precisely possible pattern values
+                    //    }
+                    //    else //no there is not
+                    //    {
+                    //         //Console.WriteLine("tired to define to full list: " + currentPixel.ToString());
+                    //         /*Console.WriteLine("experimental: at coord " + i / header.width + "x" + i % header.width);
+                    //         throw new Exception("More than 4 colors used in image");*/
+                    //    }
+                    //}
                 }
                 
             }
             //Console.WriteLine("last pixel " + currentPixel.ToString());
            // Console.WriteLine("number of pixels"+header.width * header.height+"calc lines"+test);
-            Console.WriteLine(patternPixels);
-            Console.WriteLine(patternValues);
         }
     }
 }

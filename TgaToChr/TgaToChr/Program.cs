@@ -40,6 +40,7 @@ namespace TgaToChr
             {
                 Console.WriteLine("**Error, General error **");
             }
+            //Try to read image data
             try
             {
                 sourceImage.ReadImageData();
