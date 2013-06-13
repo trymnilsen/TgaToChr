@@ -6,11 +6,18 @@ using System.Threading.Tasks;
 
 namespace TgaToChr
 {
-    struct PixelInfo
+    struct PixelInfo:IComparable<PixelInfo>
     {
         public byte red;
         public byte green;
         public byte blue;
+        public byte GrayScale
+        {
+            get
+            {
+                return (byte)((red + green + blue)/3);
+            }
+        }
         public PixelInfo(byte r, byte g, byte b)
         {
             red = r;
@@ -34,7 +41,23 @@ namespace TgaToChr
         }
         public override string ToString()
         {
-            return "R" + red + "G" + green + "B" + blue;
+            return "r" + red + "g" + green + "b" + blue;
+        }
+        public int CompareTo(PixelInfo other)
+        {
+            if(other==null)
+            {
+                return -1;
+            }
+            if(other.GrayScale>GrayScale)
+            {
+                return 1;
+            }
+            if(other.GrayScale==GrayScale)
+            {
+                return 0;
+            }
+            return -1;
         }
     }
 }

@@ -31,6 +31,18 @@ namespace TgaToChr
                     Console.ReadKey();
                     return;
                 }
+                //try to read image data
+                sourceImage.ReadImageData();
+                ChrEncoder encoder = new ChrEncoder();
+                try
+                {
+                    encoder.EncodeImageMap(sourceImage.bitMap);
+                }
+                catch(FormatException fe)
+                {
+                    Console.WriteLine("Image format error" + fe.ToString());
+                }
+
             }
             catch (UnauthorizedAccessException uae)
             {
@@ -40,16 +52,9 @@ namespace TgaToChr
             {
                 Console.WriteLine("**Error, General error **");
             }
-            //Try to read image data
-            try
-            {
-                sourceImage.ReadImageData();
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine("** Error, error processing image data" + ex.ToString());
-            }
-            
+
+            //
+            Console.WriteLine("Press any key to exit");
             Console.ReadKey();
         }
     }
