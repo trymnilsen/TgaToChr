@@ -33,7 +33,7 @@ namespace TgaToChr
                         //Line scope
                         for(int px=0; px<8; px++)
                         {
-                            PixelInfo currentPixel = map[tx * 16 + px, ty * 16 + py];
+                            PixelInfo currentPixel = map[tx * 8 + px, ty * 8 + py];
                             if(!uniqueColors.Any(p=>p==currentPixel))
                             {
                                 if (uniqueColors.Count >= 4)
@@ -43,7 +43,7 @@ namespace TgaToChr
                             }
                             PatternTable[px,py] = (byte)(uniqueColors.FindIndex(p => p == currentPixel));
                         }
-                        byteValues.AddRange(Util.singleBytesToNesFormat(Util.getFromDimentions(PatternTable,py)));
+                        byteValues.AddRange(Util.singleBytesToNesFormat(Util.getFromLine(PatternTable,py)));
 
                         //Linescope end
                     }

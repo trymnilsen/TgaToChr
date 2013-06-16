@@ -22,8 +22,8 @@ namespace TgaToChr
             }
             //Check if file is valid
             TgaFile sourceImage = new TgaFile(filePath);
-            try
-            {
+            //try
+            //{
                 sourceImage.ReadHeader();
                 if (sourceImage.Header.width != 128 && sourceImage.Header.height != 128)
                 {
@@ -35,24 +35,24 @@ namespace TgaToChr
                 //try to read image data
                 sourceImage.ReadImageData();
                 ChrEncoder encoder = new ChrEncoder();
-                try
-                {
+                //try
+                //{
                     encoder.EncodeImageMap(sourceImage.bitMap);
                     Console.WriteLine("Yay sucessfully read");
-                }
-                catch (FormatException fe)
-                {
-                    Console.WriteLine("Image format error" + fe.ToString());
-                }
-            }
-            catch (UnauthorizedAccessException uae)
-            {
-                Console.WriteLine("**Error, file access permitted by system **");
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine("**Error, General error **"+ex.ToString());
-            }
+                //}
+                //catch (FormatException fe)
+                //{
+                //    Console.WriteLine("Image format error" + fe.ToString());
+                //}
+            //}
+            //catch (UnauthorizedAccessException uae)
+            //{
+            //    Console.WriteLine("**Error, file access permitted by system **");
+            //}
+            //catch (Exception ex)
+            //{
+            //    Console.WriteLine("**Error, General error **"+ex.ToString());
+            //}
 
             //
             Console.WriteLine("Press any key to exit");
