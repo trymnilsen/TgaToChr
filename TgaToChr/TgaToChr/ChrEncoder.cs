@@ -19,16 +19,19 @@ namespace TgaToChr
             // O(n^4) shit just got real yo!
 
             //iterate through all the tiles
+            List<Byte> byteValues = new List<byte>();
             for(int ty=0; ty<16; ty++)
             {
                 for(int tx=0; tx<16; tx++)
                 {
                     //Tile Scope here
                     List<PixelInfo> uniqueColors = new List<PixelInfo>();
-                    byte[,] PatternTable = new byte[8, 8];
+                    byte[][] PatternTable = new byte[8][];
                     //Iterate on all pixes in one tile
                     for(int py=0; py<8; py++)
                     {
+                        //Line scope
+                        PatternTable[py]= new byte[8];
                         for(int px=0; px<8; px++)
                         {
                             PixelInfo currentPixel = map[tx * 16 + px, ty * 16 + py];
@@ -39,14 +42,17 @@ namespace TgaToChr
 
                                 uniqueColors.Add(currentPixel);
                             }
-                            PatternTable[px, py] = (byte)(uniqueColors.FindIndex(p => p == currentPixel));
+                            PatternTable[px][py] = (byte)(uniqueColors.FindIndex(p => p == currentPixel));
                         }
+                        byteValues.AddRange(Util.singleBytesToNesFormat(PatternTable[py]));
+
+                        //Linescope end
                     }
                     //Processing on tileAfterwards here
                 }
             }
 
-            return new byte[5];
+            return byteValues.ToArray();
         }
         
     }

@@ -31,17 +31,18 @@ namespace TgaToChr
                     Console.ReadKey();
                     return;
                 }
+               
                 //try to read image data
                 sourceImage.ReadImageData();
-                ChrEncoder encoder = new ChrEncoder();
-                try
-                {
-                    encoder.EncodeImageMap(sourceImage.bitMap);
-                }
-                catch(FormatException fe)
-                {
-                    Console.WriteLine("Image format error" + fe.ToString());
-                }
+                //ChrEncoder encoder = new ChrEncoder();
+                //try
+                //{
+                //    encoder.EncodeImageMap(sourceImage.bitMap);
+                //}
+                //catch(FormatException fe)
+                //{
+                //    Console.WriteLine("Image format error" + fe.ToString());
+                //}
 
             }
             catch (UnauthorizedAccessException uae)

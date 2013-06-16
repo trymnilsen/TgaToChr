@@ -8,7 +8,7 @@ namespace TgaToChr
 {
     class Util
     {
-        public static short littleEndToShort(byte loByte, byte hiByte)
+        public static short LittleEndToShort(byte loByte, byte hiByte)
         {
             short outputShort;
             short highByte=hiByte;
@@ -28,10 +28,76 @@ namespace TgaToChr
         /// <example>Here each letter represents a bit, but to show the switch they have
         /// names/letters, this is not hexnotation. Suppose we have the two bytes ABCDEFGH and 
         /// IJKLMNOP, this will return ACEGIKMO BDFHJLNP</example>
-        public static byte[] ConsecutiveBitsToOneInEachByte(byte firstByte, byte secondByte)
+        public static byte[] BitpairToBytes(byte firstByte, byte secondByte)
         {
-            throw new NotImplementedException("Not implemented");
-            return new byte[2];
+            byte[] returnVal = new byte[2];
+            //First byte
+            for(int i=0; i<8; i++)
+            {
+                if(isBitSet(i,firstByte))
+                {
+                    SetBit(i, returnVal[0]);
+                }
+                if(isBitSet(i,secondByte))
+                {
+                    SetBit(i, returnVal[1]);
+                }
+            }
+            return returnVal;
+        }
+        /// <summary>
+        /// Sets a bit in a byte
+        /// </summary>
+        /// <param name="nr">The bit nr, from the LSB</param>
+        /// <param name="data"></param>
+        /// <returns></returns>
+        public static byte SetBit(int nr, byte data)
+        {
+            if(nr>7)
+            {
+                throw new ArgumentException("Nr of the the bit to set cannot be grater than that of a byte");
+            }
+            return (byte)(data | 1<<nr);
+        }
+        /// <summary>
+        /// Checks if a bit is set in a byte
+        /// </summary>
+        /// <param name="nr">the bit nr</param>
+        /// <param name="data">byte to check</param>
+        /// <returns>true or false</returns>
+        public static bool isBitSet(int nr, byte data)
+        {
+            if (nr > 7)
+            {
+                throw new ArgumentException("Nr of the the bit to set cannot be grater than that of a byte");
+            } 
+            return ((data & (1 << nr)) != 0);
+        }
+        /// <summary>
+        /// Combines single bytes to consecutive bits in a byte
+        /// </summary>
+        /// <param name="bytes"></param>
+        /// <returns></returns>
+        public static byte[] singleBytesToCombined(byte[] bytes)
+        {
+            byte[] returnVal = new byte[2];
+            for(int i=0; i<8; i++)
+            {
+                if(isBitSet(0,bytes[i]))
+                {
+                    SetBit((i * 2) % 8, i / 8 > 0 ? returnVal[1] : returnVal[0]);
+                }
+                if (isBitSet(1, bytes[i]))
+                {
+                    SetBit((i * 2) % 8, i / 8 > 0 ? returnVal[1] : returnVal[0]);
+                }
+            }
+            return returnVal;
+        }
+        public static byte[] singleBytesToNesFormat(byte[] bytes)
+        {
+            byte[] bytesCombined = singleBytesToCombined(bytes);
+            return BitpairToBytes(bytesCombined[0], bytesCombined[1]);
         }
     }
 }

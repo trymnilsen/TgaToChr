@@ -31,14 +31,14 @@ namespace TgaToChr
             header.colorMapType = fileBytes[1];
             header.dataTypeCode = fileBytes[2];
 
-            header.colorMapStart = Util.littleEndToShort(fileBytes[4], fileBytes[3]);
-            header.colorMapLength = Util.littleEndToShort(fileBytes[6], fileBytes[5]);
+            header.colorMapStart = Util.LittleEndToShort(fileBytes[4], fileBytes[3]);
+            header.colorMapLength = Util.LittleEndToShort(fileBytes[6], fileBytes[5]);
             header.colorMapDepth = fileBytes[7];
 
-            header.x_origin = Util.littleEndToShort(fileBytes[9], fileBytes[8]);
-            header.y_origin = Util.littleEndToShort(fileBytes[11], fileBytes[10]);
-            header.width = Util.littleEndToShort(fileBytes[13], fileBytes[12]);
-            header.height = Util.littleEndToShort(fileBytes[15], fileBytes[14]);
+            header.x_origin = Util.LittleEndToShort(fileBytes[9], fileBytes[8]);
+            header.y_origin = Util.LittleEndToShort(fileBytes[11], fileBytes[10]);
+            header.width = Util.LittleEndToShort(fileBytes[13], fileBytes[12]);
+            header.height = Util.LittleEndToShort(fileBytes[15], fileBytes[14]);
 
             header.bitsPerPixel = fileBytes[16];
             header.descriptor = fileBytes[17];
