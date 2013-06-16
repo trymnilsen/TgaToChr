@@ -26,12 +26,11 @@ namespace TgaToChr
                 {
                     //Tile Scope here
                     List<PixelInfo> uniqueColors = new List<PixelInfo>();
-                    byte[][] PatternTable = new byte[8][];
+                    byte[,] PatternTable = new byte[8,8];
                     //Iterate on all pixes in one tile
                     for(int py=0; py<8; py++)
                     {
                         //Line scope
-                        PatternTable[py]= new byte[8];
                         for(int px=0; px<8; px++)
                         {
                             PixelInfo currentPixel = map[tx * 16 + px, ty * 16 + py];
@@ -42,9 +41,9 @@ namespace TgaToChr
 
                                 uniqueColors.Add(currentPixel);
                             }
-                            PatternTable[px][py] = (byte)(uniqueColors.FindIndex(p => p == currentPixel));
+                            PatternTable[px,py] = (byte)(uniqueColors.FindIndex(p => p == currentPixel));
                         }
-                        byteValues.AddRange(Util.singleBytesToNesFormat(PatternTable[py]));
+                        byteValues.AddRange(Util.singleBytesToNesFormat(Util.getFromDimentions(PatternTable,py)));
 
                         //Linescope end
                     }

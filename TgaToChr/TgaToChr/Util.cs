@@ -99,5 +99,16 @@ namespace TgaToChr
             byte[] bytesCombined = singleBytesToCombined(bytes);
             return BitpairToBytes(bytesCombined[0], bytesCombined[1]);
         }
+        public static byte [] getFromDimentions(byte[,] bytes, int dimention)
+        {
+            if (dimention > bytes.Rank)
+                throw new ArgumentException("Requested dimention larger than array rank");
+            byte[] returnArray = new byte[bytes.GetLength(dimention)];
+            for(int i=0; i<bytes.GetLength(dimention); i++)
+            {
+                returnArray[i] = bytes[i,dimention];
+            }
+            return returnArray;
+        }
     }
 }

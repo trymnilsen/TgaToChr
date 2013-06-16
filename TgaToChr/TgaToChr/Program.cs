@@ -34,16 +34,16 @@ namespace TgaToChr
                
                 //try to read image data
                 sourceImage.ReadImageData();
-                //ChrEncoder encoder = new ChrEncoder();
-                //try
-                //{
-                //    encoder.EncodeImageMap(sourceImage.bitMap);
-                //}
-                //catch(FormatException fe)
-                //{
-                //    Console.WriteLine("Image format error" + fe.ToString());
-                //}
-
+                ChrEncoder encoder = new ChrEncoder();
+                try
+                {
+                    encoder.EncodeImageMap(sourceImage.bitMap);
+                    Console.WriteLine("Yay sucessfully read");
+                }
+                catch (FormatException fe)
+                {
+                    Console.WriteLine("Image format error" + fe.ToString());
+                }
             }
             catch (UnauthorizedAccessException uae)
             {
@@ -51,7 +51,7 @@ namespace TgaToChr
             }
             catch (Exception ex)
             {
-                Console.WriteLine("**Error, General error **");
+                Console.WriteLine("**Error, General error **"+ex.ToString());
             }
 
             //
