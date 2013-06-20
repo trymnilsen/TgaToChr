@@ -37,7 +37,22 @@ namespace TgaToChr
                 ChrEncoder encoder = new ChrEncoder();
                 //try
                 //{
-                    encoder.EncodeImageMap(sourceImage.bitMap);
+                    byte[] byteStream = encoder.EncodeImageMap(sourceImage.bitMap);
+                    int i = 0;
+                    foreach(byte b in byteStream)
+                    {
+                        if(i%15==0)
+                        {
+                            Console.WriteLine("");
+                        }
+                        Console.Write("0x"+Convert.ToString(b, 16).PadLeft(2,'0')+" ");
+                        i++;
+                    }
+                    FileStream fs = File.Create("Output.chr", 2048);
+                    BinaryWriter bw = new BinaryWriter(fs);
+                    bw.Write(byteStream);
+                    bw.Close();
+                    fs.Close();
                     Console.WriteLine("Yay sucessfully read");
                 //}
                 //catch (FormatException fe)
