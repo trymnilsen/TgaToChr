@@ -63,7 +63,7 @@ namespace TgaToChr
 
             imageData = new PixelInfo[header.width, header.height];
             //List<PixelInfo> uniquePixels = new List<PixelInfo>();
-            for (int y = 0; y < header.height; y += 1)
+            for (int y = header.height-1; y >= 0; y -= 1)
             {
                 for (int x = 0; x < Header.width; x += 1)
                 {

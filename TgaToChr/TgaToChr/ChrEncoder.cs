@@ -43,7 +43,7 @@ namespace TgaToChr
                             }
                             PatternTable[px,py] = (byte)(uniqueColors.FindIndex(p => p == currentPixel));
                         }
-                        byteValues.AddRange(Util.singleBytesToNesFormat(Util.getFromLine(PatternTable,py)));
+                        byteValues.AddRange(createEncodedPatternTable(Util.getFromLine(PatternTable,py)));
 
                         //Linescope end
                     }
@@ -52,6 +52,27 @@ namespace TgaToChr
             }
 
             return byteValues.ToArray();
+        }
+        private byte [] createEncodedPatternTable(byte[] bytes)
+        {
+            // set byte 1(only has the lsb 1 or 0) as bit 7 in first byte 
+            // set byte 2 as bit 7 in first byte 
+            // set byte 3(only has the lsb 1 or 0) as bit 6 in first byte 
+            // set byte 4 as bit 6 in first byte 
+            byte[] returnBytes = new byte[2];
+            for (int i = 0; i < 8; i++)
+            {
+                if (bytes[i]==1 || bytes[i]==3)
+                {
+                    returnBytes[0] = Util.SetBit(7 - i, returnBytes[0]);
+                }
+                if (bytes[i] == 2 || bytes[i]==3)
+                {
+                    returnBytes[1] = Util.SetBit(7 - i, returnBytes[1]);
+                }
+
+            }
+            return returnBytes;
         }
         
     }

@@ -48,7 +48,7 @@ namespace TgaToChr
         /// <summary>
         /// Sets a bit in a byte
         /// </summary>
-        /// <param name="nr">The bit nr, from the LSB</param>
+        /// <param name="nr">The bit nr, from the LSB, (ex: lsb = 0, msb = 7)</param>
         /// <param name="data"></param>
         /// <returns></returns>
         public static byte SetBit(int nr, byte data)
@@ -73,38 +73,70 @@ namespace TgaToChr
             } 
             return ((data & (1 << nr)) != 0);
         }
+
         /// <summary>
         /// Combines single bytes to consecutive bits in a byte
         /// </summary>
         /// <param name="bytes"></param>
         /// <returns></returns>
         /// Bug here! not setting the setting th returnvalue of set bit to something
-        public static byte[] singleBytesToCombined(byte[] bytes)
-        {
-            byte[] returnVal = new byte[2];
-            int bitNrToSet = 0;
-            for(int i=0; i<8; i++)
-            {
-                if(i / 4 > 0)
-                {
-                    bitNrToSet = 1;
-                }
-                if(isBitSet(0,bytes[i]))
-                {
-                    returnVal[bitNrToSet]=SetBit((i * 2) % 8, i / 4 > 0 ? returnVal[1] : returnVal[0]);
-                }
-                if (isBitSet(1, bytes[i]))
-                {
-                    returnVal[bitNrToSet]=SetBit(((i * 2) % 8)+1, i / 4 > 0 ? returnVal[1] : returnVal[0]);
-                }
-            }
-            return returnVal;
-        }
-        public static byte[] singleBytesToNesFormat(byte[] bytes)
-        {
-            byte[] bytesCombined = singleBytesToCombined(bytes);
-            return BitpairToBytes(bytesCombined[0], bytesCombined[1]);
-        }
+        //public static byte[] singleBytesToCombined(byte[] bytes)
+        //{
+        //    byte[] returnVal = new byte[2];
+        //    int bitNrToSet = 0;
+        //    for(int i=0; i<8; i++)
+        //    {
+        //        if(i / 4 > 0)
+        //        {
+        //            bitNrToSet = 1;
+        //        }
+        //        if(isBitSet(0,bytes[i]))
+        //        {
+        //            returnVal[bitNrToSet]=SetBit((i * 2) % 8, i / 4 > 0 ? returnVal[1] : returnVal[0]);
+        //        }
+        //        if (isBitSet(1, bytes[i]))
+        //        {
+        //            returnVal[bitNrToSet]=SetBit(((i * 2) % 8)+1, i / 4 > 0 ? returnVal[1] : returnVal[0]);
+        //        }
+        //    }
+        //    return returnVal;
+        //}
+        //public static byte[] singleBytesToNesFormat(byte[] bytes)
+        //{
+        //    byte[] bytesCombined = singleBytesToCombined(bytes);
+        //    return BitpairToBytes(bytesCombined[0], bytesCombined[1]);
+        //}
+
+        ///// <summary>
+        ///// Combines single bytes to consecutive bits in a byte
+        ///// </summary>
+        ///// <param name="bytes"></param>
+        ///// <returns></returns>
+        //public static byte[] singleBytesToCombined(byte[] bytes)
+        //{
+        //    byte[] returnVal = new byte[2];
+        //    for(int i=0; i<8; i++)
+        //    {
+        //        if(isBitSet(0,bytes[i]))
+        //        {
+        //            SetBit((i * 2) % 8, i / 8 > 0 ? returnVal[1] : returnVal[0]);
+        //        }
+        //        if (isBitSet(1, bytes[i]))
+        //        {
+        //            SetBit((i * 2) % 8, i / 8 > 0 ? returnVal[1] : returnVal[0]);
+        //        }
+        //    }
+        //    return returnVal;
+        //}
+        //public static byte[] singleBytesToNesFormat(byte[] bytes)
+        //{
+        //    //We have the 2 bits we need per pixel in the byte array (should have size 8)
+        //    //this contain one tile of information
+        //    //we need to stich this together
+        //    byte[] bytesCombined = singleBytesToCombined(bytes);
+        //    return BitpairToBytes(bytesCombined[0], bytesCombined[1]);
+        //}
+
         public static byte [] getFromLine(byte[,] bytes, int line)
         {
 
