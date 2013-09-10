@@ -36,11 +36,11 @@ namespace TgaToChr
             {
                 if(isBitSet(i,firstByte))
                 {
-                    SetBit(i, returnVal[0]);
+                    returnVal[0]=SetBit(i, returnVal[0]);
                 }
                 if(isBitSet(i,secondByte))
                 {
-                    SetBit(i, returnVal[1]);
+                    returnVal[1]=SetBit(i, returnVal[1]);
                 }
             }
             return returnVal;
@@ -78,18 +78,24 @@ namespace TgaToChr
         /// </summary>
         /// <param name="bytes"></param>
         /// <returns></returns>
+        /// Bug here! not setting the setting th returnvalue of set bit to something
         public static byte[] singleBytesToCombined(byte[] bytes)
         {
             byte[] returnVal = new byte[2];
+            int bitNrToSet = 0;
             for(int i=0; i<8; i++)
             {
+                if(i / 4 > 0)
+                {
+                    bitNrToSet = 1;
+                }
                 if(isBitSet(0,bytes[i]))
                 {
-                    SetBit((i * 2) % 8, i / 8 > 0 ? returnVal[1] : returnVal[0]);
+                    returnVal[bitNrToSet]=SetBit((i * 2) % 8, i / 4 > 0 ? returnVal[1] : returnVal[0]);
                 }
                 if (isBitSet(1, bytes[i]))
                 {
-                    SetBit((i * 2) % 8, i / 8 > 0 ? returnVal[1] : returnVal[0]);
+                    returnVal[bitNrToSet]=SetBit(((i * 2) % 8)+1, i / 4 > 0 ? returnVal[1] : returnVal[0]);
                 }
             }
             return returnVal;
