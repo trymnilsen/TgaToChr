@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -43,9 +44,55 @@ namespace TgaToChr
                             }
                             PatternTable[px,py] = (byte)(uniqueColors.FindIndex(p => p == currentPixel));
                         }
-                        byteValues.AddRange(createEncodedPatternTable(Util.getFromLine(PatternTable,py)));
+                        //byteValues.AddRange(createEncodedPatternTable(Util.getFromLine(PatternTable,py)));
 
                         //Linescope end
+                    }
+                    //This part was written quickly in need of sleep it is indeed stupid to do two loops like this
+                    //create tile with first two pattern bits
+                    //then creat tile with second two patternbits
+                    for (int py2 = 0; py2 < 8; py2++)
+                    {
+                        byteValues.Add(createEncodedPatternTable(Util.getFromLine(PatternTable, py2),0));
+                    }
+                    for (int py2 = 0; py2 < 8; py2++)
+                    {
+                        byteValues.Add(createEncodedPatternTable(Util.getFromLine(PatternTable, py2),1));
+                    }
+                    if (ty == 0 && tx == 0)
+                    {
+
+                        Console.WriteLine("Writing first tile in encoded format for debug to tile.txt");
+                        FileStream fs2 = File.Create("tileB.txt", 2048);
+                        BinaryWriter bw2 = new BinaryWriter(fs2);
+                        for (int py2 = 0; py2 < 8; py2++)
+                        {
+                            bw2.Write(createEncodedPatternTable(Util.getFromLine(PatternTable, py2),0));
+                        }
+                        for (int py2 = 0; py2 < 8; py2++)
+                        {
+                            bw2.Write(createEncodedPatternTable(Util.getFromLine(PatternTable, py2),1));
+                        }
+                        bw2.Close();
+                        fs2.Close();
+                        Console.WriteLine("Yay sucessfully written");
+
+                        Console.WriteLine("Writing first tile pattern table for debug to tile.txt");
+                        FileStream fs = File.Create("tile.txt", 2048);
+                        StreamWriter bw = new StreamWriter(fs);
+                        StringBuilder sb = new StringBuilder();
+                        for (int py = 0; py < 8; py++)
+                        {
+                            //Line scope
+                            for (int px = 0; px < 8; px++)
+                            {
+                                sb.Append(Convert.ToString(PatternTable[px, py], 16) + " ");
+                            }
+                            sb.AppendLine();
+                        }
+                        bw.Write(sb.ToString());
+                        bw.Close();
+                        fs.Close();
                     }
                     //Processing on tileAfterwards here
                 }
@@ -53,26 +100,22 @@ namespace TgaToChr
 
             return byteValues.ToArray();
         }
-        private byte [] createEncodedPatternTable(byte[] bytes)
+        private byte createEncodedPatternTable(byte[] bytes, int tilenr)
         {
             // set byte 1(only has the lsb 1 or 0) as bit 7 in first byte 
             // set byte 2 as bit 7 in first byte 
             // set byte 3(only has the lsb 1 or 0) as bit 6 in first byte 
             // set byte 4 as bit 6 in first byte 
-            byte[] returnBytes = new byte[2];
+            byte returnByte = 0;
             for (int i = 0; i < 8; i++)
             {
-                if (bytes[i]==1 || bytes[i]==3)
+                if (bytes[i]==1+tilenr || bytes[i]==3)
                 {
-                    returnBytes[0] = Util.SetBit(7 - i, returnBytes[0]);
-                }
-                if (bytes[i] == 2 || bytes[i]==3)
-                {
-                    returnBytes[1] = Util.SetBit(7 - i, returnBytes[1]);
+                    returnByte = Util.SetBit(7 - i, returnByte);
                 }
 
             }
-            return returnBytes;
+            return returnByte;
         }
         
     }
