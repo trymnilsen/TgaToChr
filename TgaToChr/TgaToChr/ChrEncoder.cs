@@ -21,13 +21,13 @@ namespace TgaToChr
 
             //iterate through all the tiles
             List<Byte> byteValues = new List<byte>();
-            Dictionary<PixelInfo, int> knownColors = new Dictionary<PixelInfo, int>();
+            List<PixelInfo> uniqueColors = new List<PixelInfo>(4);
             for(int ty=0; ty<16; ty++)
             {
                 for(int tx=0; tx<16; tx++)
                 {
                     //Tile Scope here
-                    List<PixelInfo> uniqueColors = new List<PixelInfo>();
+                    
                     byte[,] PatternTable = new byte[8,8];
                     //Iterate on all pixes in one tile
                     for(int py=0; py<8; py++)
@@ -35,23 +35,14 @@ namespace TgaToChr
                         //Line scope
                         for(int px=0; px<8; px++)
                         {
-                                PixelInfo currentPixel = map[tx * 8 + px, ty * 8 + py];
+                            PixelInfo currentPixel = map[tx * 8 + px, ty * 8 + py];
+                            if (!uniqueColors.Any(p => p == currentPixel))
+                            {
                                 if (uniqueColors.Count >= 4)
                                     throw new FormatException("More than 4 colors defined in image at tile{" + tx + "/" + ty + "}");
-                                //do we know this color/has it been used in another tile? if so 
-                                //give it the same pattern value
-                                if (knownColors.ContainsKey(currentPixel))
-                                {
-                                    uniqueColors.Add(currentPixel);
-                                }
-                                else
-                                {
-                                    if(knownColors.Count<4)
-                                    {
-                                        
-                                    }
-                                    uniqueColors.Add();
-                                }
+
+                                uniqueColors.Add(currentPixel);
+                            }
                             PatternTable[px,py] = (byte)(uniqueColors.FindIndex(p => p == currentPixel));
                         }
                         //byteValues.AddRange(createEncodedPatternTable(Util.getFromLine(PatternTable,py)));
