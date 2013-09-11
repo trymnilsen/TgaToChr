@@ -21,6 +21,7 @@ namespace TgaToChr
 
             //iterate through all the tiles
             List<Byte> byteValues = new List<byte>();
+            Dictionary<PixelInfo, int> knownColors = new Dictionary<PixelInfo, int>();
             for(int ty=0; ty<16; ty++)
             {
                 for(int tx=0; tx<16; tx++)
@@ -34,14 +35,23 @@ namespace TgaToChr
                         //Line scope
                         for(int px=0; px<8; px++)
                         {
-                            PixelInfo currentPixel = map[tx * 8 + px, ty * 8 + py];
-                            if(!uniqueColors.Any(p=>p==currentPixel))
-                            {
+                                PixelInfo currentPixel = map[tx * 8 + px, ty * 8 + py];
                                 if (uniqueColors.Count >= 4)
                                     throw new FormatException("More than 4 colors defined in image at tile{" + tx + "/" + ty + "}");
-
-                                uniqueColors.Add(currentPixel);
-                            }
+                                //do we know this color/has it been used in another tile? if so 
+                                //give it the same pattern value
+                                if (knownColors.ContainsKey(currentPixel))
+                                {
+                                    uniqueColors.Add(currentPixel);
+                                }
+                                else
+                                {
+                                    if(knownColors.Count<4)
+                                    {
+                                        
+                                    }
+                                    uniqueColors.Add();
+                                }
                             PatternTable[px,py] = (byte)(uniqueColors.FindIndex(p => p == currentPixel));
                         }
                         //byteValues.AddRange(createEncodedPatternTable(Util.getFromLine(PatternTable,py)));
@@ -59,41 +69,37 @@ namespace TgaToChr
                     {
                         byteValues.Add(createEncodedPatternTable(Util.getFromLine(PatternTable, py2),1));
                     }
-                    if (ty == 0 && tx == 0)
+                    Console.WriteLine("Writing first tile in encoded format for debug to tile.txt");
+                    FileStream fs2 = File.Create("out/binTile"+tx+"-"+ty+".txt", 2048);
+                    BinaryWriter bw2 = new BinaryWriter(fs2);
+                    for (int py2 = 0; py2 < 8; py2++)
                     {
-
-                        Console.WriteLine("Writing first tile in encoded format for debug to tile.txt");
-                        FileStream fs2 = File.Create("tileB.txt", 2048);
-                        BinaryWriter bw2 = new BinaryWriter(fs2);
-                        for (int py2 = 0; py2 < 8; py2++)
-                        {
-                            bw2.Write(createEncodedPatternTable(Util.getFromLine(PatternTable, py2),0));
-                        }
-                        for (int py2 = 0; py2 < 8; py2++)
-                        {
-                            bw2.Write(createEncodedPatternTable(Util.getFromLine(PatternTable, py2),1));
-                        }
-                        bw2.Close();
-                        fs2.Close();
-                        Console.WriteLine("Yay sucessfully written");
-
-                        Console.WriteLine("Writing first tile pattern table for debug to tile.txt");
-                        FileStream fs = File.Create("tile.txt", 2048);
-                        StreamWriter bw = new StreamWriter(fs);
-                        StringBuilder sb = new StringBuilder();
-                        for (int py = 0; py < 8; py++)
-                        {
-                            //Line scope
-                            for (int px = 0; px < 8; px++)
-                            {
-                                sb.Append(Convert.ToString(PatternTable[px, py], 16) + " ");
-                            }
-                            sb.AppendLine();
-                        }
-                        bw.Write(sb.ToString());
-                        bw.Close();
-                        fs.Close();
+                        bw2.Write(createEncodedPatternTable(Util.getFromLine(PatternTable, py2),0));
                     }
+                    for (int py2 = 0; py2 < 8; py2++)
+                    {
+                        bw2.Write(createEncodedPatternTable(Util.getFromLine(PatternTable, py2),1));
+                    }
+                    bw2.Close();
+                    fs2.Close();
+                    Console.WriteLine("Yay sucessfully written");
+
+                    Console.WriteLine("Writing first tile pattern table for debug to tile.txt");
+                    FileStream fs = File.Create("out/tile" + tx + "-" + ty + ".txt", 2048);
+                    StreamWriter bw = new StreamWriter(fs);
+                    StringBuilder sb = new StringBuilder();
+                    for (int py = 0; py < 8; py++)
+                    {
+                        //Line scope
+                        for (int px = 0; px < 8; px++)
+                        {
+                            sb.Append(Convert.ToString(PatternTable[px, py], 16) + " ");
+                        }
+                        sb.AppendLine();
+                    }
+                    bw.Write(sb.ToString());
+                    bw.Close();
+                    fs.Close();
                     //Processing on tileAfterwards here
                 }
             }

@@ -59,5 +59,17 @@ namespace TgaToChr
             }
             return -1;
         }
+        /// <summary>
+        /// The hashing function of this method is purely based on grayscale.. meaning there will! be collision on for example RGB 15-10-10 and 10-10-15
+        /// </summary>
+        /// <returns></returns>
+        public override int GetHashCode()
+        {
+            return (int)GrayScale;
+        }
+        public override bool Equals(object obj)
+        {
+            return (((PixelInfo)obj).GrayScale == GrayScale);
+        }
     }
 }
